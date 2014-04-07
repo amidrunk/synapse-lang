@@ -1,7 +1,17 @@
 *.class
 
+# Maven
+
+lang/target/*
+compiler/target/*
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+
+# IntelliJ
+.idea
+*.iml
+atlassian-ide-plugin.xml
 
 # Package Files #
 *.jar

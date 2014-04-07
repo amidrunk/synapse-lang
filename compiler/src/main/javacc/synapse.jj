@@ -1,0 +1,28 @@
+PARSER_BEGIN(SynapseParser)
+
+package synapse.compiler.parser.impl;
+
+public final class SynapseParser {
+}
+
+PARSER_END(SynapseParser)
+
+SKIP:  { " " | "\t" | "\n" | "\r" }
+
+TOKEN: {
+    < LBRACE: "{" >
+|   < RBRACE: "}" >
+|   < LPAREN: "(" >
+|   < RPAREN: ")" >
+}
+
+TOKEN: {
+    < CLASS : "class" >
+|   < IDENTIFIER : (["a"-"z", "A"-"Z"])+ >
+}
+
+void Class(): {
+
+}{
+    "class" <IDENTIFIER> "(" ")" "{" "}"
+}
