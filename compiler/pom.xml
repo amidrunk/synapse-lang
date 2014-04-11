@@ -35,7 +35,8 @@
                         </goals>
                         <configuration>
                             <packageName>synapse.compiler.parser.impl</packageName>
-                            <outputDirectory>${project.basedir}/src/main/java/synapse/compiler/parser/impl</outputDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+                            <isStatic>false</isStatic>
                             <includes>
                                 <include>synapse.jj</include>
                             </includes>
@@ -47,5 +48,14 @@
     </build>
 
     <dependencies>
+
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>synapse</groupId>
+            <artifactId>synapse-lang</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

@@ -2,7 +2,22 @@ PARSER_BEGIN(SynapseParser)
 
 package synapse.compiler.parser.impl;
 
+import java.io.*;
+import synapse.lang.model.*;
+import synapse.compiler.parser.model.*;
+import synapse.compiler.parser.*;
+
 public final class SynapseParser {
+
+    private ParserDelegate parserDelegate;
+
+    public SynapseParser(ParserDelegate parserDelegate, InputStream stream, String encoding) {
+        this(stream, encoding);
+
+        assert parserDelegate != null : "Parser delegate can't be null";
+
+        this.parserDelegate = parserDelegate;
+    }
 }
 
 PARSER_END(SynapseParser)
@@ -14,6 +29,10 @@ TOKEN: {
 |   < RBRACE: "}" >
 |   < LPAREN: "(" >
 |   < RPAREN: ")" >
+|   < COLON: ":" >
+|   < COMMA: "," >
+|   < MAP: "=>" >
+|   < FORWARD: "->" >
 }
 
 TOKEN: {
@@ -21,8 +40,71 @@ TOKEN: {
 |   < IDENTIFIER : (["a"-"z", "A"-"Z"])+ >
 }
 
-void Class(): {
+void Root(): {
 
 }{
-    "class" <IDENTIFIER> "(" ")" "{" "}"
+    Class()
+}
+
+void Class(): {
+    final Token classNameToken;
+    final ClassDelegate cd;
+}{
+    "class" classNameToken = <IDENTIFIER> { cd = parserDelegate.beginClass(classNameToken.image); } ClassStateSpec(cd) "{"
+        ClassReceptorList(cd)
+    "}" { cd.complete(); }
+}
+
+void ClassStateSpec(final ClassDelegate cd): {
+
+}{
+    "(" (FieldList(cd))? ")"
+}
+
+void ClassReceptorList(final ClassDelegate cd): {
+}{
+    (Receptor(cd))*
+}
+
+void Receptor(final ClassDelegate cd): {
+    final Token receptorNameToken;
+    final ReceptorDelegate rd;
+}{
+    receptorNameToken = <IDENTIFIER> "{" { rd = cd.beginReceptor(receptorNameToken.image); } (MessagePatternList(rd))? "=>"
+
+    "}" { rd.complete(); }
+
+}
+
+void MessagePatternList(ReceptorDelegate rd): {
+}{
+    Pattern(rd) ("," Pattern(rd))*
+}
+
+void Pattern(ReceptorDelegate rd): {
+}{
+    TypedVariablePattern(rd)
+}
+
+void TypedVariablePattern(ReceptorDelegate rd): {
+    final Token variableNameToken;
+    final Token variableTypeToken;
+}{
+    variableNameToken = <IDENTIFIER> ":" variableTypeToken = <IDENTIFIER> {
+        rd.beginMessageFieldPattern().typedVariable(variableNameToken.image, variableTypeToken.image);
+    }
+}
+
+void FieldList(final FieldDelegate fd): {
+}{
+    Field(fd) ("," Field(fd))*
+}
+
+void Field(final FieldDelegate fd): {
+    final Token fieldNameToken;
+    final Token typeNameToken;
+}{
+    fieldNameToken = <IDENTIFIER> ":" typeNameToken = <IDENTIFIER>
+
+    { fd.addField(fieldNameToken.image, typeNameToken.image); }
 }

@@ -1,0 +1,78 @@
+1. CLASS DECLARATION
+
+class <class-name> [(field_1, ..., field_n)] { receptors; }
+
+1.1 Example - empty class declaration
+
+class MyClass {
+}
+
+1.2 Example - stateless class with single receptor
+
+class MyClass {
+    ping { "pong" }
+}
+
+1.3 Example - stateful class with single receptor
+
+class Integer(value:int) {
+
+    Integer { initialValue:int =>
+        this(value = initialValue);
+    }
+
+    increment { amount:int =>
+        this(value = value + amount);
+    }
+
+    decrement { amount:int =>
+        this(value = value - amount);
+    }
+}
+
+1.4 Example - companion object
+
+object Integer {
+
+    valueOf { string:String =>
+        valueOf { string:String, index:int =>
+            current = (string[index] - '0');
+
+            string.length() { length:int =>
+                if (index < length) {
+                    valueOf(string, index + 1) => current * 10 + _
+                } else {
+                    current
+                }
+            }
+        }
+    }
+}
+
+
+
+class String(buffer:char[], offset:int, length:int) {
+
+    String(buffer) { buffer:char[] =>
+        this(buffer, 0, buffer);
+    }
+
+    substring { start, end =>
+        this(buffer, start, end - start);
+    }
+
+}
+
+
+// Want to avoid this:
+
+doA() -> {
+    match(_) {
+        "A" => "Value was A"
+        "B" => "Value was B"
+    }
+}
+
+Like this maybe:
+
+doA() -> _ ? "A" => "Value was A" | "B" => "Value was B" => Console.writeLine(_)

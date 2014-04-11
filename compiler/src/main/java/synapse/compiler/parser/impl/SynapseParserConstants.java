@@ -19,9 +19,17 @@ public interface SynapseParserConstants {
   /** RegularExpression Id. */
   int RPAREN = 8;
   /** RegularExpression Id. */
-  int CLASS = 9;
+  int COLON = 9;
   /** RegularExpression Id. */
-  int IDENTIFIER = 10;
+  int COMMA = 10;
+  /** RegularExpression Id. */
+  int MAP = 11;
+  /** RegularExpression Id. */
+  int FORWARD = 12;
+  /** RegularExpression Id. */
+  int CLASS = 13;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 14;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -37,6 +45,10 @@ public interface SynapseParserConstants {
     "\"}\"",
     "\"(\"",
     "\")\"",
+    "\":\"",
+    "\",\"",
+    "\"=>\"",
+    "\"->\"",
     "\"class\"",
     "<IDENTIFIER>",
   };

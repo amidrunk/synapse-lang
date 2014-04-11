@@ -1,0 +1,18 @@
+I/O platform support
+
+Asynchronous I/O only. Example, copy file from A to B:
+
+copy { from:string, to:string =>
+    File.open(from) || File.open(to) -> { f1, f2 =>
+        copy {
+            f1.read(1024) -> {
+                match(_) {
+                    (Result.OK, buffer, length) => f2.write(buffer, length) => { (r) => r != Result.OK ? r : copy() }
+                    _ => Result.OK
+                }
+            }
+        }
+
+        copy()
+    }
+}
